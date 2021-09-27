@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Weather-app</title>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma-rtl.min.css"
+		/>
+		<link rel="stylesheet" href="./style.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	</head>
+	<body>
+		<!-- Search Section -->
+
+		<section class="section">
+			<div class="container">
+				<div class="field has-addons has-icons-right">
+					<div class="control is-expanded">
+						<input
+							id="input"
+							class="input"
+							type="text"
+							placeholder="Enter City"
+						/>
+					</div>
+
+					<div class="control">
+						<button class="button is-info ml-3" id="searchBtn">Search</button>
+					</div>
+
+					<div class="control">
+						<button class="button is-info ml-1" id="currentLocation">
+							<i class="fa fa-location-arrow"></i>
+						</button>
+					</div>
+				</div>
+				<div id="root"></div>
+			</div>
+		</section>
+
+		<!-- Today Card -->
+
+		<section class="section">
+			<div class="container" id="today"></div>
+		</section>
+
+		<!-- Hourly view -->
+
+		<!-- <section class="section">
+			<div class="container">
+				<div class="columns">
+					<div class="column">
+                  <div class="card">
+
+                  </div>
+               </div>
+					<div class="column">Second column</div>
+					<div class="column">Third column</div>
+					<div class="column">Fourth column</div>
+					<div class="column">Fifth column</div>
+					<div class="column">Sixth column</div>
+				</div>
+			</div>
+		</section> -->
+
+		<script src="index.js" type="module"></script>
+	</body>
+</html>
+<!-- <img src='https://openweathermap.org/img/w/04d.png' alt="Placeholder image"> -->
