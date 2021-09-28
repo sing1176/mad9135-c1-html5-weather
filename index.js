@@ -13,6 +13,7 @@ let searchBtn = document
 	});
 
 let weekly = [];
+
 let hourly = [];
 
 async function main(input) {
@@ -28,6 +29,8 @@ async function main(input) {
 
 function buildTodayCard(forecast, location) {
 	console.log(forecast);
+	weekly = forecast.daily;
+	console.log(weekly);
 	let currentTemp = Math.floor(forecast.current.temp);
 	let feelsLike = Math.floor(forecast.current.feels_like);
 	let todayDate = new Date(forecast.current.dt * 1000);
@@ -35,7 +38,7 @@ function buildTodayCard(forecast, location) {
 	let humidity = forecast.current.humidity;
 	let description = forecast.current.weather[0].description;
 	let icon = forecast.current.weather[0].icon;
-
+	buildWeekView();
 	const words = description.split(' ');
 	for (let i = 0; i < words.length; i++) {
 		words[i] = words[i][0].toUpperCase() + words[i].substr(1);
