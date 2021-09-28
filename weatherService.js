@@ -31,7 +31,6 @@ export async function getForecast(options) {
 	const forecast = await fetchForecast({ units, coord });
 	cache.set(coord, forecast);
 	return forecast;
-
 	/**
 	 * Helper function to check cache expiry
 	 * @param {number} cacheTime UNIX timestamp in seconds
@@ -54,20 +53,3 @@ async function fetchForecast({ coord: { lat, lon }, units }) {
 	if (!response.ok) throw new Error(response.statusText);
 	return response.json();
 }
-
-/**
- * Returns an <img> HTMLElement with the correct URL to display
- * the OpenWeather image corresponding to the given `iconCode`.
- * @param {string} iconCode
- */
-export function createWeatherIcon(iconCode) {
-   console.log(iconCode);
-	let img = document.createElement('img');
-	img.setAttribute(
-		'src',
-		'https://openweathermap.org/img/w/' + "iconCode" + '.png'
-	);
-	img.setAttribute('alt', '');
-	return img;
-}
-

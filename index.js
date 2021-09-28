@@ -1,13 +1,18 @@
-import { getForecast, createWeatherIcon } from './weatherService.js';
+import { getForecast } from './weatherService.js';
 import { getGeolocation } from './mapService.js';
 
 // Grab Input and pass it to Search
-let searchBtn = document
-	.getElementById('searchBtn')
+let searchBtn = document.getElementById('searchBtn')
 	.addEventListener('click', () => {
 		let input = document.getElementById('input').value;
+      if (!input){
+         return
+      }
 		main(input);
 	});
+
+
+
 
 async function main(input) {
 	const location = input;
@@ -36,12 +41,11 @@ function buildTodayCard(forecast, location) {
 	}
 	words.join(' ');
 
-   let capLocation = location.split(' ');
-		for (let i = 0; i < capLocation.length; i++) {
-			capLocation[i] = capLocation[i][0].toUpperCase() + capLocation[i].substr(1);
-		}
-		capLocation.join(' ');
-   
+	let capLocation = location.split(' ');
+	for (let i = 0; i < capLocation.length; i++) {
+		capLocation[i] = capLocation[i][0].toUpperCase() + capLocation[i].substr(1);
+	}
+	capLocation.join(' ');
 
 	let today = document.getElementById('today');
 	today.innerHTML = `
@@ -64,8 +68,75 @@ function buildTodayCard(forecast, location) {
 					</div>
 				</div>
    `;
-	console.log('here');
 }
 
-// let div = document.getElementById('root').innerText(forecast)
-// .appendChild(createWeatherIcon());
+let currentLocation = document.getElementById('currentLocation')
+	.addEventListener('click', getCurrentCoords);
+
+async function getCurrentCoords() {
+   let options = {
+			enableHighAccuracy: true,
+			timeout: 5000,
+			maximumAge: 0,
+		};
+
+		 function success(pos) {
+			let coords = pos.coords;
+         let currentCoords = {
+						lat: coords.latitude,
+						lon: coords.longitude,
+					};
+               useCoords(currentCoords)
+		}
+
+		function error(err) {
+			console.warn(`ERROR(${err.code}): ${err.message}`);
+		}
+		navigator.geolocation.getCurrentPosition(success, error, options);
+}
+
+
+async function useCoords(currentCoords){
+   const forecast = await getForecast(currentCoords);
+   console.log(forecast);
+   let currentTemp = Math.floor(forecast.current.temp);
+		let feelsLike = Math.floor(forecast.current.feels_like);
+		let todayDate = new Date(forecast.current.dt * 1000);
+		forecast.current.dt;
+		let humidity = forecast.current.humidity;
+		let description = forecast.current.weather[0].description;
+		let icon = forecast.current.weather[0].icon;
+      const words = description.split(' ');
+			for (let i = 0; i < words.length; i++) {
+				words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+			}
+			words.join(' ');
+   let today = document.getElementById('today');
+		today.innerHTML = `
+   <div class="card">
+					<div class="card-content">
+                  <div class="card-header">
+        <figure class="image is-48x48">
+        <img src='https://openweathermap.org/img/w/${icon}.png' alt="Placeholder image">
+        </figure>
+                     <p class="card-header-title">Your Location</p>
+                     <p class="card-header-title">${words}</p>
+                  </div>
+                  <div class="card-content">
+                  <p class="today">Today - ${todayDate}</p>
+                  
+                     <p>Current Temperature - ${currentTemp}&deg;C </p>
+                     <p>Feels Like - ${feelsLike}&deg;C</p>
+                     <p>Humidity - ${humidity}</p>
+                  </div>
+					</div>
+				</div>
+   `;
+}
+
+
+
+
+
+
+
