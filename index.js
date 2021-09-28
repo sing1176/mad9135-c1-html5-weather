@@ -2,17 +2,18 @@ import { getForecast } from './weatherService.js';
 import { getGeolocation } from './mapService.js';
 
 // Grab Input and pass it to Search
-let searchBtn = document.getElementById('searchBtn')
+let searchBtn = document
+	.getElementById('searchBtn')
 	.addEventListener('click', () => {
 		let input = document.getElementById('input').value;
-      if (!input){
-         return
-      }
+		if (!input) {
+			return;
+		}
 		main(input);
 	});
 
-
-
+let weekly = [];
+let hourly = [];
 
 async function main(input) {
 	const location = input;
@@ -70,49 +71,52 @@ function buildTodayCard(forecast, location) {
    `;
 }
 
-let currentLocation = document.getElementById('currentLocation')
+let currentLocation = document
+	.getElementById('currentLocation')
 	.addEventListener('click', getCurrentCoords);
 
 async function getCurrentCoords() {
-   let options = {
-			enableHighAccuracy: true,
-			timeout: 5000,
-			maximumAge: 0,
+	let options = {
+		enableHighAccuracy: true,
+		timeout: 5000,
+		maximumAge: 0,
+	};
+
+	function success(pos) {
+		let coords = pos.coords;
+		let currentCoords = {
+			lat: coords.latitude,
+			lon: coords.longitude,
 		};
+		useCoords(currentCoords);
+	}
 
-		 function success(pos) {
-			let coords = pos.coords;
-         let currentCoords = {
-						lat: coords.latitude,
-						lon: coords.longitude,
-					};
-               useCoords(currentCoords)
-		}
-
-		function error(err) {
-			console.warn(`ERROR(${err.code}): ${err.message}`);
-		}
-		navigator.geolocation.getCurrentPosition(success, error, options);
+	function error(err) {
+		console.warn(`ERROR(${err.code}): ${err.message}`);
+	}
+	navigator.geolocation.getCurrentPosition(success, error, options);
 }
 
+// building card with device coordinates
 
-async function useCoords(currentCoords){
-   const forecast = await getForecast(currentCoords);
-   console.log(forecast);
-   let currentTemp = Math.floor(forecast.current.temp);
-		let feelsLike = Math.floor(forecast.current.feels_like);
-		let todayDate = new Date(forecast.current.dt * 1000);
-		forecast.current.dt;
-		let humidity = forecast.current.humidity;
-		let description = forecast.current.weather[0].description;
-		let icon = forecast.current.weather[0].icon;
-      const words = description.split(' ');
-			for (let i = 0; i < words.length; i++) {
-				words[i] = words[i][0].toUpperCase() + words[i].substr(1);
-			}
-			words.join(' ');
-   let today = document.getElementById('today');
-		today.innerHTML = `
+async function useCoords(currentCoords) {
+	const forecast = await getForecast(currentCoords);
+	console.log(forecast);
+	weekly = forecast.daily;
+	let currentTemp = Math.floor(forecast.current.temp);
+	let feelsLike = Math.floor(forecast.current.feels_like);
+	let todayDate = new Date(forecast.current.dt * 1000);
+	forecast.current.dt;
+	let humidity = forecast.current.humidity;
+	let description = forecast.current.weather[0].description;
+	let icon = forecast.current.weather[0].icon;
+	const words = description.split(' ');
+	for (let i = 0; i < words.length; i++) {
+		words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+	}
+	words.join(' ');
+	let today = document.getElementById('today');
+	today.innerHTML = `
    <div class="card">
 					<div class="card-content">
                   <div class="card-header">
@@ -124,7 +128,6 @@ async function useCoords(currentCoords){
                   </div>
                   <div class="card-content">
                   <p class="today">Today - ${todayDate}</p>
-                  
                      <p>Current Temperature - ${currentTemp}&deg;C </p>
                      <p>Feels Like - ${feelsLike}&deg;C</p>
                      <p>Humidity - ${humidity}</p>
@@ -132,11 +135,40 @@ async function useCoords(currentCoords){
 					</div>
 				</div>
    `;
+
+	buildWeekView();
 }
 
+function buildWeekView() {
+		let weekCard = (document.getElementById('week').innerHTML = weekly.map(day=>{
+			console.log(day);
+			let min= Math.floor(day.temp.min);
+			let max = Math.floor(day.temp.max);
+			let description = day.weather[0].main;
+			let icon = day.weather[0].icon 
 
+			console.log(description);
+			
+         let dayDate = new Date(day.dt * 1000);
 
-
-
-
+         return `
+         <div class="column">
+         <div class="card">
+					<div class="card-content">
+                  <div class="card-header">
+						 <figure class="image is-48x48">
+        <img src='https://openweathermap.org/img/w/${icon}.png' alt="Placeholder image">
+        </figure>
+                     <p class="card-header-title ">${dayDate}</p>
+                  </div>
+						<p class="today">Weather - ${description} </p>
+						<p class="today">Min - ${min}&deg;C</p>
+                  <p class="today">Max - ${max}&deg;C</p>
+					</div>
+				</div>
+      </div>
+         `;
+      }));
+	;
+}
 
