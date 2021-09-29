@@ -15,6 +15,9 @@ let searchBtn = document
 let weekly = [];
 
 let hourly = [];
+
+let hourlyView = false;
+
 console.log(hourly);
 
 async function main(input) {
@@ -29,7 +32,6 @@ async function main(input) {
 }
 
 function buildTodayCard(forecast, location) {
-	
 	console.log(forecast);
 	weekly = forecast.daily;
 	hourly = forecast.hourly;
@@ -148,15 +150,19 @@ async function useCoords(currentCoords) {
 }
 
 function buildWeekView() {
-	document.getElementById('switch').style.display = 'block';
-		let weekCard = (document.getElementById('week').innerHTML = weekly.map(day=>{
-			let min= Math.floor(day.temp.min);
+	console.log('Coming from build week');
+	let btn = document.getElementById('switch');
+	btn.textContent = 'Switch to Hourly view';
+	btn.style.display = 'block';
+
+	let weekCard = (document.getElementById('week').innerHTML = weekly.map(
+		(day) => {
+			let min = Math.floor(day.temp.min);
 			let max = Math.floor(day.temp.max);
 			let description = day.weather[0].main;
-			let icon = day.weather[0].icon 
-         let dayDate = new Date(day.dt * 1000);
-
-         return `
+			let icon = day.weather[0].icon;
+			let dayDate = new Date(day.dt * 1000);
+			return `
          <div class="column">
          <div class="card">
 					<div class="card-content">
@@ -173,24 +179,24 @@ function buildWeekView() {
 				</div>
       </div>
          `;
-      }));
-	;
+		}
+	));
 }
 
-document.getElementById('switch').addEventListener('click',buildHourly)
- function buildHourly() {
-	 let fewHours = hourly.slice(0,6)
-	 console.log(fewHours);
-		let weekCard = (document.getElementById('week').innerHTML = fewHours.map(
-			(hour) => {
-				console.log(hour);
-				let temp = Math.floor(hour.temp);
-				let feels = Math.floor(hour.feels_like);
-				let description = hour.weather[0].main;
-				let icon = hour.weather[0].icon;
-
-				let dayDate = new Date(hour.dt * 1000);
-				return `
+function buildHourly() {
+	console.log('I am in Hourly view');
+	hourlyView = true;
+	let btn = document.getElementById('switch');
+	btn.textContent = 'Switch to Weekly view';
+	let fewHours = hourly.slice(0, 6);
+	let weekCard = (document.getElementById('week').innerHTML = fewHours.map(
+		(hour) => {
+			let temp = Math.floor(hour.temp);
+			let feels = Math.floor(hour.feels_like);
+			let description = hour.weather[0].main;
+			let icon = hour.weather[0].icon;
+			let dayDate = new Date(hour.dt * 1000);
+			return `
          <div class="column">
          <div class="card">
 					<div class="card-content">
@@ -207,8 +213,17 @@ document.getElementById('switch').addEventListener('click',buildHourly)
 				</div>
       </div>
          `;
-			}
-		));
- }
+		}
+	));
+}
 
+document.getElementById('switch').addEventListener('click', doSwitch);
 
+function doSwitch() {
+	if (hourlyView == false) {
+		buildHourly();
+	}else{
+		buildWeekView();
+		hourlyView = false;
+	}
+}
