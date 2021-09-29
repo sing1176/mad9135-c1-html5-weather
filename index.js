@@ -57,7 +57,7 @@ function buildTodayCard(forecast, location) {
 
 	let today = document.getElementById('today');
 	today.innerHTML = `
-   <div class="card">
+   <div class="card ">
 					<div class="card-content">
                   <div class="card-header">
         <figure class="image is-48x48">
@@ -163,8 +163,8 @@ function buildWeekView() {
 			let icon = day.weather[0].icon;
 			let dayDate = new Date(day.dt * 1000);
 			return `
-         <div class="column">
-         <div class="card">
+         <div class="column four-fifths-desktop four-fifths-tablet">
+         <div class="card container">
 					<div class="card-content">
                   <div class="card-header">
 						 <figure class="image is-48x48">
@@ -197,7 +197,7 @@ function buildHourly() {
 			let icon = hour.weather[0].icon;
 			let dayDate = new Date(hour.dt * 1000);
 			return `
-         <div class="column">
+         <div class="column column four-fifths-desktop four-fifths-tablet">
          <div class="card">
 					<div class="card-content">
                   <div class="card-header">
