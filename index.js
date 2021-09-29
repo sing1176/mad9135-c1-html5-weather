@@ -28,9 +28,12 @@ async function main(input) {
 }
 
 function buildTodayCard(forecast, location) {
+	
 	console.log(forecast);
 	weekly = forecast.daily;
+	hourly = forecast.hourly;
 	console.log(weekly);
+	console.log(hourly);
 	let currentTemp = Math.floor(forecast.current.temp);
 	let feelsLike = Math.floor(forecast.current.feels_like);
 	let todayDate = new Date(forecast.current.dt * 1000);
@@ -71,6 +74,8 @@ function buildTodayCard(forecast, location) {
                   </div>
 					</div>
 				</div>
+
+
    `;
 }
 
@@ -106,6 +111,7 @@ async function useCoords(currentCoords) {
 	const forecast = await getForecast(currentCoords);
 	console.log(forecast);
 	weekly = forecast.daily;
+	hourly = forecast.hourly;
 	let currentTemp = Math.floor(forecast.current.temp);
 	let feelsLike = Math.floor(forecast.current.feels_like);
 	let todayDate = new Date(forecast.current.dt * 1000);
@@ -143,15 +149,12 @@ async function useCoords(currentCoords) {
 }
 
 function buildWeekView() {
+	document.getElementById('switch').style.display = 'block';
 		let weekCard = (document.getElementById('week').innerHTML = weekly.map(day=>{
-			console.log(day);
 			let min= Math.floor(day.temp.min);
 			let max = Math.floor(day.temp.max);
 			let description = day.weather[0].main;
 			let icon = day.weather[0].icon 
-
-			console.log(description);
-			
          let dayDate = new Date(day.dt * 1000);
 
          return `
@@ -175,3 +178,36 @@ function buildWeekView() {
 	;
 }
 
+document.getElementById('switch').addEventListener('click',buildHourly)
+ function buildHourly() {
+	 let fewHours = hourly.slice(0,6)
+	 console.log(fewHours);
+		let weekCard = (document.getElementById('week').innerHTML = fewHours.map(
+			(hour) => {
+				console.log(hour);
+				let temp = Math.floor(hour.temp);
+				let feels = Math.floor(hour.feels_like);
+				let description = hour.weather[0].main;
+				let icon = hour.weather[0].icon;
+
+				let dayDate = new Date(hour.dt * 1000);
+				return `
+         <div class="column">
+         <div class="card">
+					<div class="card-content">
+                  <div class="card-header">
+						 <figure class="image is-48x48">
+        <img src='https://openweathermap.org/img/w/${icon}.png' alt="Placeholder image">
+        </figure>
+                     <p class="card-header-title ">${dayDate}</p>
+                  </div>
+						<p class="today">Weather - ${description} </p>
+						<p class="today">Current Temperature - ${temp}&deg;C</p>
+                  <p class="today">Feels Like - ${feels}&deg;C</p>
+					</div>
+				</div>
+      </div>
+         `;
+			}
+		));
+ }
