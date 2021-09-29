@@ -15,6 +15,7 @@ let searchBtn = document
 let weekly = [];
 
 let hourly = [];
+console.log(hourly);
 
 async function main(input) {
 	const location = input;
@@ -32,8 +33,6 @@ function buildTodayCard(forecast, location) {
 	console.log(forecast);
 	weekly = forecast.daily;
 	hourly = forecast.hourly;
-	console.log(weekly);
-	console.log(hourly);
 	let currentTemp = Math.floor(forecast.current.temp);
 	let feelsLike = Math.floor(forecast.current.feels_like);
 	let todayDate = new Date(forecast.current.dt * 1000);
@@ -211,3 +210,5 @@ document.getElementById('switch').addEventListener('click',buildHourly)
 			}
 		));
  }
+
+
