@@ -3,6 +3,9 @@ import { getGeolocation } from './mapService.js';
 
 const STORAGE = {
 	keys: [],
+
+	results:[],
+
 	saveKey(forecast) {
 		let key = document.getElementById('input').value.toLowerCase();
 		localStorage.setItem(key, JSON.stringify(forecast));
@@ -12,35 +15,62 @@ const STORAGE = {
 	findKey(key) {
 		let storage = localStorage.getItem(key);
 		storage = JSON.parse(storage);
+		STORAGE.keys.push(key);
 		return storage;
 	},
 };
 
 const APP = {
 	forecast: [],
+
 	hourlyView: false,
+
+	findInStorage() {
+		console.log('looking in storage');
+		let input = document.getElementById('input').value;
+		if (input) {
+			let key = input.toLowerCase();
+			console.log(STORAGE.keys);
+			if (STORAGE.keys.includes(key)) {
+				let data = STORAGE.findKey(key);
+				console.log(data);
+			} else console.log('Not in storage fetching through the web');
+			APP.data();
+		}
+	},
 	init() {
 		console.log('App init');
 		APP.search();
 		APP.switchView();
 		APP.useLocation();
-		// APP.useCoords()
-		// look for keys and build the package or
-		// do the fetch and save the key and continue
+		APP.useCoords()
 	},
 	search() {
-		let searchBtn = document
-			.getElementById('searchBtn')
-			.addEventListener('click', () => {
-				let input = document.getElementById('input').value;
-				if (!input) {
-					console.log('no input provided');
-					return;
-				} else {
-					console.log(`searching for ${input}`);
-					APP.data();
-				}
-			});
+		document.getElementById('searchBtn').addEventListener('click', () => {
+			let input = document.getElementById('input').value;
+			if (!input) {
+				console.log('no input provided');
+				return;
+			} else {
+				APP.findInStorage();
+				// APP.data();
+				// console.log(`searching for ${input}`);
+			}
+		});
+	},
+	async data() {
+		try {
+			let location = document.getElementById('input').value;
+			const coord = await getGeolocation(location);
+			const forecast = await getForecast({ coord });
+			STORAGE.saveKey(forecast);
+			APP.forecast = forecast;
+			APP.results = forecast;
+			APP.buildTodayCard();
+			APP.buildWeekCards();
+		} catch (error) {
+			console.log(error.message);
+		}
 	},
 	useLocation() {
 		let locationButton = document
@@ -69,32 +99,20 @@ const APP = {
 				navigator.geolocation.getCurrentPosition(success, error, options);
 			});
 	},
-	 async useCoords(currentCoords) {
+	async useCoords(currentCoords) {
 		const forecast = await getForecast(currentCoords);
 		APP.forecast = forecast;
-		console.log(forecast);
 		APP.buildTodayCard();
 		APP.buildWeekCards();
 	},
-	async data() {
-		try {
-			let location = document.getElementById('input').value;
-			const coord = await getGeolocation(location);
-			const forecast = await getForecast({ coord });
-			APP.forecast = forecast;
-			APP.buildTodayCard();
-			APP.buildWeekCards();
-		} catch (error) {
-			console.log(error.message);
-		}
-	},
+
 	buildTodayCard() {
 		console.log(APP.forecast);
 		let location = document.getElementById('input').value;
-		if(location == ''){
-			location = 'Your location'
+		if (location == '') {
+			location = 'Your location';
 		}
-		console.log(location);
+
 		let forecast = APP.forecast;
 		let currentTemp = Math.floor(forecast.current.temp);
 		let feelsLike = Math.floor(forecast.current.feels_like);
@@ -131,7 +149,7 @@ const APP = {
    `;
 	},
 	buildWeekCards() {
-		console.log('Coming from build week');
+		console.log('I am in weekly view');
 		let btn = document.getElementById('switch');
 		btn.textContent = 'Switch to Hourly view';
 		btn.style.display = 'block';
@@ -208,46 +226,3 @@ const APP = {
 };
 
 document.addEventListener('DOMContentLoaded', APP.init);
-
-
-// 	findKeyFunc(ev){
-//     ev.preventDefault();
-//     let input = document.getElementById('input').value;
-//     let data ='';
-
-//     if (input) {
-//       let key= input.toLowerCase();
-//       if (STORAGE.keys.includes(key)){
-//         data = STORAGE.findKey(key);
-//         console.log(data);
-//         APP.results = data;
-//         // pass data to the function that will use it
-
-//       } else {
-//         APP.search();
-//       }
-//     }
-//   },
-
-// Grab Input and pass it to Search
-
-// local storage
-
-//    const STORAGE = {
-// 			keys: [],
-// 			saveKey(forecast) {
-// 				let key = document.getElementById('input').value.toLowerCase();
-// 				localStorage.setItem(key, JSON.stringify(forecast));
-// 				STORAGE.keys.push(key);
-// 			},
-// 			findKey(key) {
-// 				let storage = localStorage.getItem(key);
-// 				storage = JSON.parse(storage);
-// 				console.log(storage);
-// 				console.log(storage.keys);
-// 				return storage;
-// 			}
-// 		};
-
-// async function useCoords(currentCoords) {
-//
