@@ -15,7 +15,6 @@
 		/>
 	</head>
 	<body>
-
 		<!-- Search Section -->
 
 		<section class="section">
@@ -26,16 +25,20 @@
 							id="input"
 							class="input"
 							type="text"
-							placeholder="Enter City"
+							placeholder="Enter city name or Use Location"
 						/>
 					</div>
+
+					<!-- Search button -->
 
 					<div class="control">
 						<button class="button is-info ml-3" id="searchBtn">Search</button>
 					</div>
 
+					<!-- location button -->
+
 					<div class="control">
-						<button class="button is-info ml-1" id="currentLocation">
+						<button class="button is-info ml-1" id="locationButton">
 							<i class="fa fa-location-arrow"></i>
 						</button>
 					</div>
@@ -47,27 +50,22 @@
 		<!-- Today Card -->
 
 		<section class="section">
-			<div class="container" id="today">
-				 
-			</div>
+			<div class="container" id="today"></div>
 		</section>
+
+		<!-- button area section -->
 
 		<section class="section">
 			<div class="container">
-				<Button class="switch" id="switch"> 
-				</Button>
+				<button class="switch" id="switch"></button>
 			</div>
 		</section>
 
-		<!-- Cards view -->
-
-	
+		<!-- Cards Section -->
 
 		<section class="section">
 			<div class="container">
-				<div class="columns is-multiline" id="week">
-					
-				</div>
+				<div class="columns is-multiline" id="week"></div>
 			</div>
 		</section>
 
